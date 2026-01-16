@@ -16,3 +16,14 @@
 
 ### Test Results
 All 18 tests passing.
+
+## 2026-01-16: Mark GET /tasks endpoint as complete
+
+### Completed
+- Verified GET /tasks endpoint implementation in main.go (listTasks method)
+- Endpoint returns all tasks as JSON array with Content-Type: application/json
+- Returns empty array [] when no tasks exist
+- Confirmed existing tests cover this endpoint (TestServerBasic)
+- All 18 tests passing
+- Linting passes (go vet, gofmt)
+- Marked task as complete in PRD.md
