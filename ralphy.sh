@@ -8,6 +8,7 @@
 
 set -euo pipefail
 
+
 # ============================================
 # CONFIGURATION & DEFAULTS
 # ============================================
@@ -912,9 +913,9 @@ run_ai_command() {
         "$prompt" > "$output_file" 2>&1 &
       ;;
     qwen)
-      # Qwen-Code: use hypothetical CLI with JSON format
-      qwen --format json \
-        --output-format stream-json \
+      # Qwen-Code: use CLI with JSON format and auto-approve tools
+      qwen --output-format stream-json \
+        --approval-mode yolo \
         -p "$prompt" > "$output_file" 2>&1 &
       ;;
     codex)
@@ -1007,6 +1008,11 @@ parse_ai_result() {
         response=$(echo "$result_line" | jq -r '.result // "No result text"' 2>/dev/null || echo "Could not parse result")
         input_tokens=$(echo "$result_line" | jq -r '.usage.input_tokens // 0' 2>/dev/null || echo "0")
         output_tokens=$(echo "$result_line" | jq -r '.usage.output_tokens // 0' 2>/dev/null || echo "0")
+      fi
+
+      # Fallback when no response text was parsed, similar to OpenCode behavior
+      if [[ -z "$response" ]]; then
+        response="Task completed"
       fi
       ;;
     codex)
@@ -1418,8 +1424,8 @@ Focus only on implementing: $task_name"
       qwen)
         (
           cd "$worktree_dir"
-          qwen --format json \
-            --output-format stream-json \
+          qwen --output-format stream-json \
+            --approval-mode yolo \
             -p "$prompt"
         ) > "$tmpfile" 2>>"$log_file"
         ;;
@@ -1893,8 +1899,8 @@ Be careful to preserve functionality from BOTH branches. The goal is to integrat
                 "$resolve_prompt" > "$resolve_tmpfile" 2>&1
               ;;
             qwen)
-              qwen --format json \
-                --output-format stream-json \
+              qwen --output-format stream-json \
+                --approval-mode yolo \
                 -p "$resolve_prompt" > "$resolve_tmpfile" 2>&1
               ;;
             codex)

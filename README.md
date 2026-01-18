@@ -168,7 +168,7 @@ Example: "Add user authentication" becomes `ralphy/add-user-authentication`
 | OpenCode | `opencode` | `OPENCODE_PERMISSION='{"*":"allow"}'` | Token usage + actual cost |
 | Codex | `codex` | N/A | Token usage (if provided) |
 | Cursor | `agent` | `--force` | API duration (no token counts) |
-| Qwen-Code | `qwen` | N/A | Token usage (if provided) |
+| Qwen-Code | `qwen` | `--approval-mode yolo` | Token usage (if provided) |
 
 **Note:** Cursor's CLI doesn't expose token usage, so Ralphy tracks total API duration instead.
 
