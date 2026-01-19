@@ -1,6 +1,6 @@
 {
   "name": "ralphy-cli",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Autonomous AI Coding Loop - Supports Claude Code, OpenCode, Codex, Cursor, Qwen-Code and Factory Droid",
   "type": "module",
   "main": "dist/index.js",
@@ -9,7 +9,8 @@
   },
   "files": [
     "dist",
-    "bin.js"
+    "bin.js",
+    "README.md"
   ],
   "scripts": {
     "dev": "bun run src/index.ts",

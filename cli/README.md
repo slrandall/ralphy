@@ -1,71 +1,150 @@
-# Ralphy CLI (TypeScript)
+# Ralphy
 
-TypeScript implementation of Ralphy - Autonomous AI Coding Loop.
+Autonomous AI coding loop. Runs AI agents on tasks until done.
 
-## Installation
+## Install
 
 ```bash
-# Global install
-npm install -g ralphy
-# or
-bun add -g ralphy
-
-# Then use anywhere
-ralphy "add a button"
+npm install -g ralphy-cli
 ```
 
-## Development
+## Quick Start
 
 ```bash
-# Install dependencies
-bun install
+# Single task
+ralphy "add login button"
 
-# Run in development
-bun run dev "add a button"
-bun run dev --help
-
-# Build binary
-bun run build
-
-# Build for all platforms
-bun run build:all
-```
-
-## Usage
-
-```bash
-# Single task mode
-ralphy "add dark mode toggle"
-ralphy "fix the login bug" --cursor
-
-# PRD mode (task lists)
+# Work through a task list
 ralphy --prd PRD.md
-ralphy --yaml tasks.yaml
-ralphy --github owner/repo
-
-# With options
-ralphy --parallel --max-parallel 4
-ralphy --branch-per-task --create-pr
-ralphy --opencode --dry-run
 ```
 
-## Supported AI Engines
+## Two Modes
 
-- `--claude` - Claude Code (default)
-- `--opencode` - OpenCode
-- `--cursor` - Cursor Agent
-- `--codex` - Codex CLI
-- `--qwen` - Qwen-Code
-- `--droid` - Factory Droid
-
-## Configuration
-
-Initialize config:
+**Single task** - just tell it what to do:
 ```bash
-ralphy --init
+ralphy "add dark mode"
+ralphy "fix the auth bug"
 ```
 
-This creates `.ralphy/config.yaml` with auto-detected project settings.
+**Task list** - work through a PRD:
+```bash
+ralphy              # uses PRD.md
+ralphy --prd tasks.md
+```
+
+## Project Config
+
+Optional. Stores rules the AI must follow.
+
+```bash
+ralphy --init              # auto-detects project settings
+ralphy --config            # view config
+ralphy --add-rule "use TypeScript strict mode"
+```
+
+Creates `.ralphy/config.yaml`:
+```yaml
+project:
+  name: "my-app"
+  language: "TypeScript"
+  framework: "Next.js"
+
+commands:
+  test: "npm test"
+  lint: "npm run lint"
+  build: "npm run build"
+
+rules:
+  - "use server actions not API routes"
+  - "follow error pattern in src/utils/errors.ts"
+
+boundaries:
+  never_touch:
+    - "src/legacy/**"
+    - "*.lock"
+```
+
+## AI Engines
+
+```bash
+ralphy              # Claude Code (default)
+ralphy --opencode   # OpenCode
+ralphy --cursor     # Cursor
+ralphy --codex      # Codex
+ralphy --qwen       # Qwen-Code
+ralphy --droid      # Factory Droid
+```
+
+## Task Sources
+
+**Markdown** (default):
+```bash
+ralphy --prd PRD.md
+```
+
+**YAML**:
+```bash
+ralphy --yaml tasks.yaml
+```
+
+**GitHub Issues**:
+```bash
+ralphy --github owner/repo
+ralphy --github owner/repo --github-label "ready"
+```
+
+## Parallel Execution
+
+```bash
+ralphy --parallel                  # 3 agents default
+ralphy --parallel --max-parallel 5 # 5 agents
+```
+
+Each agent gets isolated worktree + branch. Without `--create-pr`: auto-merges back. With `--create-pr`: keeps branches, creates PRs.
+
+## Branch Workflow
+
+```bash
+ralphy --branch-per-task                # branch per task
+ralphy --branch-per-task --create-pr    # + create PRs
+ralphy --branch-per-task --draft-pr     # + draft PRs
+```
+
+## Options
+
+| Flag | What it does |
+|------|--------------|
+| `--prd FILE` | task file (default: PRD.md) |
+| `--yaml FILE` | YAML task file |
+| `--github REPO` | use GitHub issues |
+| `--github-label TAG` | filter issues by label |
+| `--parallel` | run parallel |
+| `--max-parallel N` | max agents (default: 3) |
+| `--branch-per-task` | branch per task |
+| `--create-pr` | create PRs |
+| `--draft-pr` | draft PRs |
+| `--no-tests` | skip tests |
+| `--no-lint` | skip lint |
+| `--fast` | skip tests + lint |
+| `--no-commit` | don't auto-commit |
+| `--max-iterations N` | stop after N tasks |
+| `--max-retries N` | retries per task (default: 3) |
+| `--dry-run` | preview only |
+| `-v, --verbose` | debug output |
+| `--init` | setup .ralphy/ config |
+| `--config` | show config |
+| `--add-rule "rule"` | add rule to config |
+
+## Requirements
+
+- Node.js 18+ or Bun
+- AI CLI: [Claude Code](https://github.com/anthropics/claude-code), [OpenCode](https://opencode.ai/docs/), [Cursor](https://cursor.com), Codex, Qwen-Code, or [Factory Droid](https://docs.factory.ai/cli/getting-started/quickstart)
+- `gh` (optional, for GitHub issues / `--create-pr`)
+
+## Links
+
+- [GitHub](https://github.com/michaelshimeles/ralphy)
+- [Bash script version](https://github.com/michaelshimeles/ralphy#option-b-clone)
 
 ## License
 
