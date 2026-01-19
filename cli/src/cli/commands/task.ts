@@ -65,6 +65,8 @@ export async function runTask(task: string, options: RuntimeOptions): Promise<vo
 		autoCommit: options.autoCommit,
 		workDir,
 		browserEnabled: options.browserEnabled,
+		skipTests: options.skipTests,
+		skipLint: options.skipLint,
 	});
 
 	// Build active settings for display

@@ -44,6 +44,8 @@ export async function runSequential(options: ExecutionOptions): Promise<Executio
 		engine,
 		taskSource,
 		workDir,
+		skipTests,
+		skipLint,
 		dryRun,
 		maxIterations,
 		maxRetries,
@@ -101,6 +103,8 @@ export async function runSequential(options: ExecutionOptions): Promise<Executio
 			autoCommit,
 			workDir,
 			browserEnabled,
+			skipTests,
+			skipLint,
 		});
 
 		// Execute with spinner
