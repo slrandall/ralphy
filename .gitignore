@@ -1,8 +1,8 @@
-# Dependencies
-node_modules/
+# CLI Dependencies
+cli/node_modules/
 
-# Build output
-dist/
+# CLI Build output
+cli/dist/
 
 # Bun
 bun.lockb
