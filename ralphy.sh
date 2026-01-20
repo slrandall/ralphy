@@ -28,7 +28,7 @@ AUTO_COMMIT=true
 SKIP_TESTS=false
 SKIP_LINT=false
 AI_ENGINE="claude"  # claude, opencode, cursor, codex, qwen, or droid
-CLAUDE_MODEL=""     # empty = opus (default), "sonnet" = sonnet
+MODEL_OVERRIDE=""   # Override default model for any engine (e.g., "sonnet", "gpt-4o-mini")
 DRY_RUN=false
 MAX_ITERATIONS=0  # 0 = unlimited
 MAX_RETRIES=3
@@ -521,12 +521,13 @@ run_brownfield_task() {
   case "$AI_ENGINE" in
     claude)
       claude --dangerously-skip-permissions \
-        ${CLAUDE_MODEL:+--model "$CLAUDE_MODEL"} \
+        ${MODEL_OVERRIDE:+--model "$MODEL_OVERRIDE"} \
         -p "$prompt" 2>&1 | tee "$output_file"
       ;;
     opencode)
       opencode --output-format stream-json \
         --approval-mode full-auto \
+        ${MODEL_OVERRIDE:+--model "$MODEL_OVERRIDE"} \
         "$prompt" 2>&1 | tee "$output_file"
       ;;
     cursor)
@@ -589,12 +590,13 @@ ${BOLD}SINGLE TASK MODE:${RESET}
 
 ${BOLD}AI ENGINE OPTIONS:${RESET}
   --claude            Use Claude Code (default, uses Opus)
-  --sonnet            Use Claude Sonnet model instead of Opus
   --opencode          Use OpenCode
   --cursor            Use Cursor agent
   --codex             Use Codex CLI
   --qwen              Use Qwen-Code
   --droid             Use Factory Droid
+  --model <name>      Override default model for any engine
+  --sonnet            Shortcut for --claude --model sonnet
 
 ${BOLD}WORKFLOW OPTIONS:${RESET}
   --no-tests          Skip writing and running tests
@@ -692,7 +694,7 @@ parse_args() {
         ;;
       --sonnet)
         AI_ENGINE="claude"
-        CLAUDE_MODEL="sonnet"
+        MODEL_OVERRIDE="sonnet"
         shift
         ;;
       --cursor|--agent)
@@ -710,6 +712,10 @@ parse_args() {
       --droid)
         AI_ENGINE="droid"
         shift
+        ;;
+      --model)
+        MODEL_OVERRIDE="$2"
+        shift 2
         ;;
       --dry-run)
         DRY_RUN=true
@@ -1520,7 +1526,7 @@ run_ai_command() {
     *)
       # Claude Code: use existing approach
       claude --dangerously-skip-permissions \
-        ${CLAUDE_MODEL:+--model "$CLAUDE_MODEL"} \
+        ${MODEL_OVERRIDE:+--model "$MODEL_OVERRIDE"} \
         --verbose \
         --output-format stream-json \
         -p "$prompt" > "$output_file" 2>&1 &
@@ -2066,7 +2072,7 @@ Focus only on implementing: $task_name"
         (
           cd "$worktree_dir"
           claude --dangerously-skip-permissions \
-            ${CLAUDE_MODEL:+--model "$CLAUDE_MODEL"} \
+            ${MODEL_OVERRIDE:+--model "$MODEL_OVERRIDE"} \
             --verbose \
             -p "$prompt" \
             --output-format stream-json
@@ -2646,7 +2652,7 @@ Be careful to preserve functionality from BOTH branches. The goal is to integrat
               ;;
             *)
               claude --dangerously-skip-permissions \
-                ${CLAUDE_MODEL:+--model "$CLAUDE_MODEL"} \
+                ${MODEL_OVERRIDE:+--model "$MODEL_OVERRIDE"} \
                 -p "$resolve_prompt" \
                 --output-format stream-json > "$resolve_tmpfile" 2>&1
               ;;
